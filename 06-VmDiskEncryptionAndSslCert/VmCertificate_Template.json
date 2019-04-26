@@ -1,0 +1,49 @@
+{ 
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "CertificateKeyVaultUrl": {
+          "type": "string"
+      },
+      "keyVaultName": {
+          "type": "string"
+      },
+      "keyVaultResourceGroup": {
+          "type": "string"
+      },
+      "VmName": {
+          "type": "string"
+      }
+     },
+    "variables": {         
+        "keyVaultResourceID": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+     },
+    "resources": [
+        {
+            "name": "[parameters('VmName')]",
+            "apiVersion": "2018-06-01",
+            "type": "Microsoft.Compute/virtualMachines",              
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('VmName')]",               
+                    "secrets": [
+                        {
+                          "sourceVault": {
+                              "id": "[variables('keyVaultResourceID')]"
+                          },
+                          "vaultCertificates": [
+                              {
+                              "certificateUrl": "[parameters('CertificateKeyVaultUrl')]",
+                              "certificateStore": "My"
+                              }
+                          ]
+                        }
+                    ]
+                  }
+            },
+            "resources": []
+        }
+    ]
+   }
+    

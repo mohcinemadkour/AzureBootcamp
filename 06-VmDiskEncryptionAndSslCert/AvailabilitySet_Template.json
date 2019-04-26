@@ -1,0 +1,69 @@
+{ 
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "AvailabilitySetName": {
+          "type": "string"
+      },
+      "UpdateDomainCount": {
+          "type": "int",
+          "defaultValue": 5,
+          "minValue": 5,
+          "maxValue": 20
+      },
+      "FaultDomainCount": {
+          "type": "int",
+          "defaultValue": 2,
+          "minValue": 2,
+          "maxValue": 3
+      },
+      "System": {
+          "type": "string"
+      },
+      "Component": {
+          "type": "string"
+      },
+      "Environment": {
+          "type": "string"
+      },
+      "Billing Project": {
+          "type": "string"
+      },
+      "Compliance": {
+          "type": "string"
+      },
+      "Managed By": {
+          "type": "string"
+      },
+      "Role": {
+          "type": "string"
+      }
+     },
+    "variables": {
+        "apiVersionAvailabilitySets": "2017-12-01"
+     },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[parameters('AvailabilitySetName')]",
+            "apiVersion": "[variables('apiVersionAvailabilitySets')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+              "PlatformUpdateDomainCount": "[parameters('UpdateDomainCount')]",
+              "PlatformFaultDomainCount": "[parameters('FaultDomainCount')]"
+            },
+            "sku": {
+              "name": "Aligned"
+            },
+            "tags": {        
+               "System": "[parameters('System')]",
+               "Component": "[parameters('Component')]",
+               "Environment": "[parameters('Environment')]",
+               "Billing Project": "[parameters('Billing Project')]",
+               "Compliance": "[parameters('Compliance')]",
+               "Managed By": "[parameters('Managed By')]",
+               "Role": "[parameters('Role')]"     
+            }
+        }        
+    ]
+}

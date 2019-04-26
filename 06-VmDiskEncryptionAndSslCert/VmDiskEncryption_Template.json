@@ -1,0 +1,83 @@
+{ 
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VmName": {
+            "type": "string"
+        },
+        "keyVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the KeyVault to place the volume encryption key"
+            }
+        },
+        "keyVaultResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource group of the KeyVault"
+            }
+        },
+        "useExistingKek": {
+            "type": "string",
+            "defaultValue": "nokek",
+            "allowedValues": [
+                "nokek",
+                "kek"
+            ],
+            "metadata": {
+                "description": "Select kek if the secret should be encrypted with a key encryption key and pass explicit keyEncryptionKeyURL. For nokek, you can keep keyEncryptionKeyURL empty."
+            }
+        },
+        "keyEncryptionKeyURL": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "URL of the KeyEncryptionKey used to encrypt the volume encryption key"
+            }
+        },
+        "EncryptionVolumeType": {
+          "type": "string",
+          "allowedValues": [
+              "OS",
+              "Data",
+              "All"
+          ]
+        },
+        "resizeOSDisk": {
+          "type": "bool",
+          "defaultValue": false,
+          "metadata": {
+            "description": "Should the OS partition be resized to occupy full OS VHD before splitting system volume"
+          }
+        }
+     },
+    "variables": {        
+        "keyVaultResourceID": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+     },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('VmName'),'/AzureDiskEncryption')]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2017-03-30",
+            "properties": {
+              "publisher": "Microsoft.Azure.Security",
+              "type": "AzureDiskEncryption",
+              "typeHandlerVersion": "2.2",
+              "autoUpgradeMinorVersion": true,
+              "forceUpdateTag": "1.0",
+              "settings": {
+                "EncryptionOperation": "EnableEncryption",
+                "KeyVaultURL": "[reference(variables('keyVaultResourceId'),'2016-10-01').vaultUri]",
+                "KeyVaultResourceId": "[variables('keyVaultResourceID')]",
+                "KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
+                "KekVaultResourceId": "[variables('keyVaultResourceID')]",
+                "KeyEncryptionAlgorithm": "RSA-OAEP",
+                "VolumeType": "[parameters('EncryptionVolumeType')]",
+                "ResizeOSDisk": "[parameters('resizeOSDisk')]"
+              }
+            }
+        } 
+    ]
+   }
+    
