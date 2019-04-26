@@ -1,0 +1,171 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "AvailabilitySets": {
+          "value": ["BOOTCAMPSET"]
+        },
+        "VmSettings": {
+          "value": 
+            [
+              {
+                  "VmName": "BOOTCAMPWEB1",
+                  "vmAvailabilitySetName": "BOOTCAMPSET",
+                  "subnetName": "PRODEDGE",
+                  "vmSize": "Standard_D2s_v3",
+                  "VMIPAddress": "172.24.8.138",
+                  "ImagePublisher": "MicrosoftWindowsServer",
+                  "ImageOffer": "WindowsServer",
+                  "ImageSKU": "2016-Datacenter-smalldisk",
+                  "ImageVersion": "Latest",
+                  "OSDiskSize": "30",
+                  "OSDiskType": "Standard_LRS",
+                  "OSDiskCache": "ReadWrite",
+                  "DataDisks": [
+                                 {
+                                   "caching": "ReadOnly",
+                                   "sizeGb": "5",                                
+                                   "name": "BOOTCAMPWEB1-DATADISK1",
+                                   "type": "Standard_LRS"
+                                 }
+                               ],
+                  "Tags": {
+                            "System": "Lab Webserver 1",
+                            "Component": "IIS",
+                            "MaintenanceWindow": "Maintenance 1",
+                            "Role": "Infrastructure"
+                  },
+                  "vmPlanInfoRequired": false            
+              },
+              {
+                "VmName": "BOOTCAMPWEB2",
+                "vmAvailabilitySetName": "BOOTCAMPSET",
+                "subnetName": "PRODEDGE",
+                "vmSize": "Standard_D2s_v3",
+                "VMIPAddress": "172.24.8.139",
+                "ImagePublisher": "MicrosoftWindowsServer",
+                "ImageOffer": "WindowsServer",
+                "ImageSKU": "2016-Datacenter-smalldisk",
+                "ImageVersion": "Latest",
+                "OSDiskSize": "30",
+                "OSDiskType": "Standard_LRS",
+                "OSDiskCache": "ReadWrite",
+                "DataDisks": [
+                               {
+                                 "caching": "ReadOnly",
+                                 "sizeGb": "5",                                
+                                 "name": "BOOTCAMPWEB2-DATADISK1",
+                                 "type": "Standard_LRS"
+                               }
+                             ],
+                "Tags": {
+                          "System": "Lab Webserver 2",
+                          "Component": "IIS",
+                          "MaintenanceWindow": "Maintenance 2",
+                          "Role": "Infrastructure"
+                },
+                "vmPlanInfoRequired": false            
+            }
+            ]
+        },
+        "VmVnetResourceGroup": {
+           "value": "BOOTCAMP"
+        },
+        "VmVnetName": {
+           "value": "BOOTCAMPVNET"
+        },
+        "VmLocalUsername": {
+           "value": "webmaster"
+        }, 
+        "VmDiagStorAccount": {
+           "value": "azbootcampstore"
+        },
+        "KeyVaultResourceGroup": {
+            "value": "BOOTCAMP"
+        },
+        "KeyVaultName": {
+            "value": "bootcampkv"
+        },          
+        "VmCertificateSettings": {
+            "value": [
+                {
+                    "VmName": "BOOTCAMPWEB1",
+                    "CertificateUri": ""
+                },
+                {
+                    "VmName": "BOOTCAMPWEB2",
+                    "CertificateUri": ""
+                }
+            ]
+        },
+        "VmDscSettings": {
+          "value": [
+            {
+                "VmName": "BOOTCAMPWEB1",                
+                "NodeConfiguration": "WebServerConfig.bootcampweb"
+            },
+            {
+                "VmName": "BOOTCAMPWEB2",                
+                "NodeConfiguration": "WebServerConfig.bootcampweb"
+            }
+          ]
+        },
+        "DscConfigurationMode": {
+          "value": "ApplyAndMonitor"
+        },
+        "VmDomainJoinSettings": {
+            "value": [
+              {
+                  "VmName": "BOOTCAMPWEB1",                
+                  "OuPath": "OU=Web,OU=Servers,DC=bootcamp,DC=lab"
+              },
+              {
+                  "VmName": "BOOTCAMPWEB2",                
+                  "OuPath": "OU=Web,OU=Servers,DC=bootcamp,DC=lab"
+              }
+            ]
+        },
+        "AdDomainFqdn": {
+            "value": "bootcamp.lab"
+        },
+        "AdDomainJoinUsername": {
+            "value": "tunnel"
+        },
+        "VmEncryptionSettings": {
+            "value": [
+                {
+                    "VmName": "BOOTCAMPWEB1",                
+                    "EncryptionVolumeType": "All"
+                },
+                {
+                    "VmName": "BOOTCAMPWEB2",                
+                    "EncryptionVolumeType": "All"
+                }
+              ]
+        },
+        "EncryptionResizeOSDisk": {
+          "value": true
+        },        
+        "System": {
+            "value": "Lab Webservers"
+        },
+        "Component": {
+            "value": "IIS"
+        },
+        "Environment": {
+            "value": "Lab"
+        },
+        "Billing Project": {
+            "value": "Infrastructure"
+        },
+        "Compliance": {
+            "value": "string"
+        },
+        "Managed By": {
+            "value": "string"
+        },
+        "Role": {
+            "value": "Infrastructure"
+        }
+    }        
+}

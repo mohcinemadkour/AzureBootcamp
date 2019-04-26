@@ -138,14 +138,7 @@
                  "contentVersion":"1.0.0.0"
               },
               "parameters": {
-                 "StorageAccountName":{"value": "[parameters('StorageAccounts')[copyIndex()]]"},
-                 "System": {"value": "[parameters('System')]"},
-                 "Component": {"value": "[parameters('Component')]"},
-                 "Environment": {"value": "[parameters('Environment')]"},
-                 "Billing Project": {"value": "[parameters('Billing Project')]"},
-                 "Compliance": {"value": "[parameters('Compliance')]"},
-                 "Managed By": {"value": "[parameters('Managed By')]"},
-                 "Role": {"value": "[parameters('Role')]"}
+                 "StorageAccountName":{"value": "[parameters('StorageAccounts')[copyIndex()]]"}
                }
             }
         },
