@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "keyVaultName": {
+            "value": "BOOTCAMPKV" 
+        },
+        "skuName": {
+            "value": "Standard" 
+        },
+        "enableVaultForDeployment": {
+            "value": true
+        },
+        "enableVaultForDiskEncryption": {
+            "value": true
+        },
+        "accessPolicies": {
+            "value": [
+                {
+                    "comments": "Key Vault Admins",
+                    "tenantId": "6a6f640f-8bcb-4103-b982-a879eb2f1ea8",
+                    "objectId": "0424d8e8-5217-4daa-9830-f024ab3c82cc",
+                    "permissions": {
+                        "keys": ["all"],
+                        "secrets": ["all"],
+                        "certificates": ["all"]                  
+                    }
+                }
+            ]
+        }
+    }        
+}
