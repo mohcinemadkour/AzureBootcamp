@@ -1,0 +1,460 @@
+{ 
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {      
+      "StorageAccounts": {
+        "type": "array",
+        "defaultValue": ["NoStorageAccount"]
+      },
+      "AvailabilitySets": {
+        "type": "array",
+        "defaultValue": ["NoAvailabilitySet"]
+      },
+      "VMSettings": {
+        "type": "array"
+      },
+      "VmVnetResourceGroup": {
+        "type": "string"
+      },
+      "VmVnetName": {
+        "type": "string"
+      },
+      "VmLocalUsername": {
+        "type": "string"
+      },
+      "VmLocalPassword": {
+        "type": "securestring"
+      },
+      "VmDiagStorAccount": {
+        "type": "string"
+      },
+      "VmCertificateSettings": {
+        "type": "array",
+        "defaultValue": [{"VmName":"NoPfxImport"}]
+      },
+      "KeyVaultName": {
+        "type": "string"
+      },
+      "KeyVaultResourceGroup": {
+        "type": "string"
+      },
+      "VmDscSettings": {
+        "type": "array",
+        "defaultValue": [{"VmName":"NoDsc"}]
+      },
+      "AutomationRegistrationKey": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "AutomationRegistrationUrl": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "DscConfigurationMode": {
+        "type": "string",
+        "defaultValue": "ApplyAndMonitor",
+        "allowedValues": ["ApplyOnly",
+                          "ApplyAndMonitor",
+                          "ApplyAndAutoCorrect"]
+      },
+      "VmDomainJoinSettings": {
+        "type": "array",
+        "defaultValue": [{"VmName":"NoDomainJoin"}]
+      },
+      "AdDomainFqdn": {
+        "type": "string",
+        "defaultValue": "NoDomainJoin"
+      },
+      "AdDomainJoinUsername": {
+        "type": "string",
+        "defaultValue": "NoDomainJoin"
+      },
+      "AdDomainJoinPassword": {
+        "type": "securestring",
+        "defaultValue": "NoDomainJoin"
+      },
+      "VmEncryptionSettings": {
+        "type": "array",
+        "defaultValue": [{"VmName":"NoDiskEncryption"}]
+      },
+      "keyEncryptionKeyURL": {
+        "type": "string"
+      },
+      "EncryptionResizeOSDisk": {
+        "type": "bool",
+        "defaultValue": false
+      },
+      "VmSqlIaasExtSettings": {
+        "type": "array",
+        "defaultValue": [{"VmName":"NoSqlIaasExtension"}]
+      },
+      "VmSqlIaasSaUser":  {
+        "type": "string",
+        "defaultValue": "NoSqlIaasExtension"
+      },
+      "VmSqlIaasSaPassword":  {
+        "type": "securestring",
+        "defaultValue": "NoSqlIaasExtension"
+      },
+      "System": {
+          "type": "string"
+      },
+      "Component": {
+          "type": "string"
+      },
+      "Environment": {
+          "type": "string"
+      },
+      "Billing Project": {
+          "type": "string"
+      },
+      "Compliance": {
+          "type": "string"
+      },
+      "Managed By": {
+          "type": "string"
+      },
+      "Role": {
+          "type": "string"
+      }
+     },
+    "variables": {
+        "ApiLinkedTemplateVersion": "2017-05-10"
+     },
+    "resources": [
+        {
+            "condition": "[not(equals(parameters('StorageAccounts')[copyIndex()], 'NoStorageAccount'))]",
+            "name": "[concat('store', parameters('StorageAccounts')[copyIndex()])]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "copy": {
+                "count": "[length(parameters('StorageAccounts'))]",
+                "name": "StorageAccountLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/05-StorageAccountKeyEncryption/StorageAccount_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                 "StorageAccountName":{"value": "[parameters('StorageAccounts')[copyIndex()]]"},
+                 "System": {"value": "[parameters('System')]"},
+                 "Component": {"value": "[parameters('Component')]"},
+                 "Environment": {"value": "[parameters('Environment')]"},
+                 "Billing Project": {"value": "[parameters('Billing Project')]"},
+                 "Compliance": {"value": "[parameters('Compliance')]"},
+                 "Managed By": {"value": "[parameters('Managed By')]"},
+                 "Role": {"value": "[parameters('Role')]"}
+               }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('AvailabilitySets')[copyIndex()], 'NoAvailabilitySet'))]",
+            "name": "[concat('AvSet_', parameters('AvailabilitySets')[copyIndex()])]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "copy": {
+                "count": "[length(parameters('AvailabilitySets'))]",
+                "name": "AvailabilitySetLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/AvailabilitySet_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                 "AvailabilitySetName":{"value": "[parameters('AvailabilitySets')[copyIndex()]]"},
+                 "System": {"value": "[parameters('System')]"},
+                 "Component": {"value": "[parameters('Component')]"},
+                 "Environment": {"value": "[parameters('Environment')]"},
+                 "Billing Project": {"value": "[parameters('Billing Project')]"},
+                 "Compliance": {"value": "[parameters('Compliance')]"},
+                 "Managed By": {"value": "[parameters('Managed By')]"},
+                 "Role": {"value": "[parameters('Role')]"}
+               }
+            }
+        },
+        {
+            "name": "[concat('VM_', parameters('VmSettings')[copyIndex()].VmName)]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "StorageAccountLoop",
+                "AvailabilitySetLoop"
+            ],
+            "copy": {
+                "count": "[length(parameters('VmSettings'))]",
+                "name": "VmLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/VM_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "VmName": {
+                  "value": "[parameters('VmSettings')[copyIndex()].VmName]"
+                },
+                "VmSize": {
+                  "value": "[parameters('VmSettings')[copyIndex()].vmSize]"
+                },
+                "ImagePublisher": {
+                  "value": "[parameters('VmSettings')[copyIndex()].ImagePublisher]"
+                },
+                "ImageOffer": {
+                  "value": "[parameters('VmSettings')[copyIndex()].ImageOffer]"
+                },
+                "ImageSKU": {
+                  "value": "[parameters('VmSettings')[copyIndex()].ImageSKU]"
+                },
+                "ImageVersion": {
+                  "value": "[parameters('VmSettings')[copyIndex()].ImageVersion]"
+                },
+                "OSDiskType": {
+                  "value": "[parameters('VmSettings')[copyIndex()].OSDiskType]"
+                },
+                "OSDiskCache": {
+                  "value": "[parameters('VmSettings')[copyIndex()].OSDiskCache]"
+                },
+                "OSDiskSize": {
+                  "value": "[parameters('VmSettings')[copyIndex()].OSDiskSize]"
+                },
+                "VmDataDisks": {
+                  "value": "[parameters('VmSettings')[copyIndex()].DataDisks]"
+                },
+                "VmSubnet": {
+                  "value": "[parameters('VmSettings')[copyIndex()].subnetName]"
+                },
+                "VmIpAddress": {
+                  "value": "[parameters('VmSettings')[copyIndex()].VMIPAddress]"
+                },
+                "VNETResourceGroup": {
+                  "value": "[parameters('VmVnetResourceGroup')]"
+                },
+                "VNETName": {
+                    "value": "[parameters('VmVnetName')]"
+                },
+                "localAdminUsername": {
+                    "value": "[parameters('VmLocalUsername')]"
+                },
+                "localAdminPassword": {
+                    "value": "[parameters('VmLocalPassword')]"
+                },    
+                "DiagnosticStorageAccount": {
+                    "value": "[parameters('VmDiagStorAccount')]"
+                },
+                "VmAvailabilitySetName": {
+                  "value": "[parameters('VmSettings')[copyIndex()].vmAvailabilitySetName]"                                
+                },
+                "PlanInfoRequired": {
+                  "value":  "[parameters('VmSettings')[copyIndex()].vmPlanInfoRequired]"
+                },
+                "System": {"value": "[parameters('VmSettings')[copyIndex()].Tags.System]"},
+                "Component": {"value": "[parameters('VmSettings')[copyIndex()].Tags.Component]"},
+                "Environment": {"value": "[parameters('Environment')]"},
+                "Billing Project": {"value": "[parameters('Billing Project')]"},
+                "Compliance": {"value": "[parameters('Compliance')]"},
+                "Managed By": {"value": "[parameters('Managed By')]"},
+                "Maintenance Window": {"value": "[parameters('VmSettings')[copyIndex()].Tags.MaintenanceWindow]"},
+                "Role": {"value": "[parameters('VmSettings')[copyIndex()].Tags.Role]"}
+               }
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('VmCertificateSettings')[copyIndex()].VmName, 'NoPfxImport'))]",
+            "name": "[concat('VmPfx_', parameters('VmCertificateSettings')[copyIndex()].VmName)]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "VmLoop"
+            ],
+            "copy": {
+                "count": "[length(parameters('VmCertificateSettings'))]",
+                "name": "VmCertificateLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/VmCertificate_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                 "CertificateKeyVaultUrl": {
+                     "value": "[parameters('VmCertificateSettings')[copyIndex()].CertificateUri]"
+                 },
+                 "keyVaultName": {
+                     "value": "[parameters('KeyVaultName')]"
+                 },
+                 "keyVaultResourceGroup": {
+                     "value": "[parameters('KeyVaultResourceGroup')]"
+                 },
+                 "VmName": {
+                     "value": "[parameters('VmCertificateSettings')[copyIndex()].VmName]"
+                 }
+               } 
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('VmDscSettings')[copyIndex()].VmName, 'NoDsc'))]",
+            "name": "[concat('VmDsc_', parameters('VmDscSettings')[copyIndex()].VmName)]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "VmLoop",
+                "VmCertificateLoop"
+            ],
+            "copy": {
+                "count": "[length(parameters('VmDscSettings'))]",
+                "name": "VmDscLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/VmDscExtension_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                  "VmName": {
+                      "value": "[parameters('VmDscSettings')[copyIndex()].VmName]"            
+                  },
+                  "registrationKey": {
+                    "value": "[parameters('AutomationRegistrationKey')]"
+                  },
+                  "registrationUrl": {
+                    "value": "[parameters('AutomationRegistrationUrl')]"
+                  },
+                  "nodeConfigurationName": {
+                    "value": "[parameters('VmDscSettings')[copyIndex()].NodeConfiguration]"
+                  },
+                  "configurationMode": {
+                    "value": "[parameters('DscConfigurationMode')]"
+                  }
+              } 
+            }
+        },
+        {
+          "condition": "[not(equals(parameters('VmDomainJoinSettings')[copyIndex()].VmName, 'NoDomainJoin'))]",  
+          "name": "[concat('VmDomainJoin_', parameters('VmDomainJoinSettings')[copyIndex()].VmName)]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "VmLoop",
+                "VmCertificateLoop",
+                "VmDscLoop"
+            ],
+            "copy": {
+                "count": "[length(parameters('VmDomainJoinSettings'))]",
+                "name": "VmDomainJoinLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/VmDomainJoin_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "VmName": {
+                    "value": "[parameters('VmDomainJoinSettings')[copyIndex()].VmName]"            
+                },
+                "domainToJoin": {
+                  "value": "[parameters('AdDomainFqdn')]"
+                },
+                "domainUsername": {
+                  "value": "[parameters('AdDomainJoinUsername')]"
+                },
+                "domainPassword": {
+                  "value": "[parameters('AdDomainJoinPassword')]"
+                },
+                "ouPath": {
+                  "value": "[parameters('VmDomainJoinSettings')[copyIndex()].OuPath]"                  
+                }
+              } 
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('VmEncryptionSettings')[copyIndex()].VmName, 'NoDiskEncryption'))]",
+            "name": "[concat('VmDiskEncryption_', parameters('VmEncryptionSettings')[copyIndex()].VmName)]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "VmLoop",
+                "VmCertificateLoop",
+                "VmDscLoop",
+                "VmDomainJoinLoop"
+            ],
+            "copy": {
+                "count": "[length(parameters('VmEncryptionSettings'))]",
+                "name": "VmDiskEncryptionLoop"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/VmDiskEncryption_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "VmName": {
+                    "value": "[parameters('VmEncryptionSettings')[copyIndex()].VmName]"
+                },
+                "keyVaultName": {
+                    "value": "[parameters('KeyVaultName')]"
+                },
+                "keyVaultResourceGroup": {
+                    "value": "[parameters('KeyVaultResourceGroup')]"
+                },
+                "EncryptionVolumeType": {
+                  "value": "[parameters('VmEncryptionSettings')[copyIndex()].EncryptionVolumeType]"                  
+                },
+                "resizeOSDisk": {
+                  "value": "[parameters('EncryptionResizeOSDisk')]"
+                },
+                "useExistingKek": {
+                  "value": "kek"
+                },
+                "keyEncryptionKeyURL": {
+                  "value": "[parameters('keyEncryptionKeyURL')]"
+                }
+              } 
+            }
+        },
+        {
+            "condition": "[not(equals(parameters('VmSqlIaasExtSettings')[copyIndex()].VmName, 'NoSqlIaasExtension'))]",
+            "name": "[concat('VmSqlIaasExtension_', parameters('VmSqlIaasExtSettings')[copyIndex()].VmName)]",
+            "apiVersion": "[variables('ApiLinkedTemplateVersion')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "VmLoop",
+                "VmCertificateLoop",
+                "VmDscLoop",
+                "VmDomainJoinLoop",
+                "VmDiskEncryptionLoop"
+            ],
+            "copy": {
+                "count": "[length(parameters('VmSqlIaasExtSettings'))]",
+                "name": "VmSqlIaasExtSettings"
+            },
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/FabienGilbert/AzureBootcamp/master/06-VmDiskEncryptionAndSslCert/VmSqlIaasExtension_Template.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "VmName": {
+                    "value": "[parameters('VmSqlIaasExtSettings')[copyIndex()].VmName]"
+                },
+                "SQLSAUser": {
+                    "value": "[parameters('VmSqlIaasSaUser')]"
+                },
+                "SQLSAPassword": {
+                    "value": "[parameters('VmSqlIaasSaPassword')]"
+                }
+              } 
+            }
+        }        
+    ]
+}
+    
