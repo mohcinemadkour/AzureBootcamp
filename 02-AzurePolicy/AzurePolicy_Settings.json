@@ -1,0 +1,171 @@
+[
+  {
+    "PolicyAssignment": "Allowed Locations",
+    "ScopeType": "Management Group",
+    "ScopeName": "Tenant Root Group",
+    "PolicyDefinition": "Allowed locations",
+    "PolicyParameters": [
+      {
+        "name": "listOfAllowedLocations",
+        "value": [
+          "EastUS"
+        ]
+      }
+    ]
+  },
+  {
+    "PolicyAssignment": "AllowHubResourceTypes",
+    "ScopeType": "Management Group",
+    "ScopeName": "MGMTGROUP-HUB",
+    "PolicyDefinition": "Allowed resource types",
+    "PolicyParameters": [
+      {
+        "name": "listOfResourceTypesAllowed",
+        "value": [
+          "Microsoft.Compute/disks",
+          "Microsoft.Compute/virtualMachines",
+          "Microsoft.Compute/virtualMachines/extensions",
+          "Microsoft.KeyVault/vaults",
+          "Microsoft.Network/networkInterfaces",
+          "Microsoft.Network/routeTables",
+          "Microsoft.Network/virtualNetworks",
+          "Microsoft.Storage/storageAccounts",
+          "Microsoft.Automation/automationAccounts",
+          "Microsoft.Automation/automationAccounts/configurations",
+          "Microsoft.Automation/automationAccounts/runbooks",
+          "microsoft.insights/actiongroups",
+          "microsoft.insights/metricalerts",
+          "microsoft.insights/scheduledqueryrules",
+          "Microsoft.Network/connections",
+          "Microsoft.Network/localNetworkGateways",
+          "Microsoft.Network/networkSecurityGroups",
+          "Microsoft.Network/publicIPAddresses",
+          "Microsoft.Network/virtualNetworkGateways",
+          "Microsoft.OperationalInsights/workspaces",
+          "Microsoft.RecoveryServices/vaults",
+          "Microsoft.Network/networkWatchers",
+          "Microsoft.Network/networkWatchers/connectionMonitors"
+        ]
+      }
+    ]
+  },
+  {
+    "PolicyAssignment": "AllowClientResourceTypes",
+    "ScopeType": "Management Group",
+    "ScopeName": "MGMTGROUP-CLIENT",
+    "PolicyDefinition": "Allowed resource types",
+    "PolicyParameters": [
+      {
+        "name": "listOfResourceTypesAllowed",
+        "value": [
+          "Microsoft.Compute/disks",
+          "Microsoft.Compute/restorePointCollections",
+          "Microsoft.Compute/virtualMachines",
+          "Microsoft.Compute/virtualMachines/extensions",
+          "Microsoft.KeyVault/vaults",
+          "Microsoft.KeyVault/vaults/secrets",
+          "Microsoft.KeyVault/vaults/accessPolicies",
+          "Microsoft.Network/networkInterfaces",
+          "Microsoft.Network/networkSecurityGroups",
+          "Microsoft.Network/networkWatchers",
+          "Microsoft.Network/networkWatchers/connectionMonitors",
+          "Microsoft.Network/networkWatchers/lenses",
+          "Microsoft.Network/networkWatchers/pingMeshe",
+          "Microsoft.Network/routeTables",
+          "Microsoft.Network/virtualNetworks",
+          "Microsoft.Network/virtualNetworks/subnets",
+          "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+          "Microsoft.RecoveryServices/vaults",
+          "Microsoft.Resources/resourceGroups",
+          "Microsoft.Storage/storageAccounts"
+        ]
+      }
+    ]
+  },
+  {
+    "PolicyAssignment": "AllowIntResourceTypes",
+    "ScopeType": "Management Group",
+    "ScopeName": "MGMTGROUP-INTERNAL",
+    "PolicyDefinition": "Allowed resource types",
+    "PolicyParameters": [
+      {
+        "name": "listOfResourceTypesAllowed",
+        "value": [
+          "Microsoft.Automation/automationAccounts",
+          "Microsoft.Automation/automationAccounts/configurations",
+          "Microsoft.Automation/automationAccounts/jobs",
+          "Microsoft.Automation/automationAccounts/runbooks",
+          "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
+          "Microsoft.Automation/automationAccounts/variables",
+          "Microsoft.Automation/automationAccounts/webhooks",
+          "Microsoft.Compute/availabilitySets",
+          "Microsoft.Compute/disks",
+          "Microsoft.Compute/restorePointCollections",
+          "Microsoft.Compute/virtualMachines",
+          "Microsoft.Compute/virtualMachines/extensions",
+          "Microsoft.EventHub/namespaces",
+          "Microsoft.insights/actiongroups",
+          "Microsoft.insights/alertrules",
+          "Microsoft.insights/components",
+          "Microsoft.insights/metricalerts",
+          "Microsoft.insights/metrics",
+          "Microsoft.insights/scheduledqueryrules",
+          "Microsoft.KeyVault/vaults",
+          "Microsoft.KeyVault/vaults/secrets",
+          "Microsoft.KeyVault/vaults/accessPolicies",
+          "Microsoft.Network/connections",
+          "Microsoft.Network/expressRouteCircuits",
+          "Microsoft.Network/loadBalancers",
+          "Microsoft.Network/localNetworkGateways",
+          "Microsoft.Network/networkInterfaces",
+          "Microsoft.Network/networkSecurityGroups",
+          "Microsoft.Network/networkSecurityGroups/securityRules",
+          "Microsoft.Network/networkWatchers",
+          "Microsoft.Network/networkWatchers/connectionMonitors",
+          "Microsoft.Network/networkWatchers/lenses",
+          "Microsoft.Network/networkWatchers/pingMeshes",
+          "Microsoft.Network/routeTables",
+          "Microsoft.Network/virtualNetworkGateways",
+          "Microsoft.Network/virtualNetworks",
+          "Microsoft.Network/virtualNetworks/subnets",
+          "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+          "Microsoft.OperationalInsights/workspaces",
+          "Microsoft.OperationsManagement/solutions",
+          "Microsoft.RecoveryServices/vaults",
+          "Microsoft.Resources/resourceGroups",
+          "Microsoft.Storage/storageAccounts"
+        ]
+      }
+    ]
+  },
+  {
+    "PolicyAssignment": "AuditTDE",
+    "ScopeType": "Management Group",
+    "ScopeName": "MGMTGROUP-INTERNAL",
+    "PolicyDefinition": "Audit transparent data encryption status",
+    "PolicyParameters": [
+      {
+        "name": "Effect",
+        "value": "AuditIfNotExists"
+      }
+    ]
+  },
+  {
+    "PolicyAssignment": "AuditStorageAccountsNet",
+    "ScopeType": "Management Group",
+    "ScopeName": "MGMTGROUP-INTERNAL",
+    "PolicyDefinition": "Audit unrestricted network access to storage accounts",
+    "PolicyParameters": [
+      {
+        "name": "Effect",
+        "value": "Audit"
+      }
+    ]
+  },
+  {
+    "PolicyAssignment": "AuditWebserverProtocols",
+    "ScopeType": "Resource Group",
+    "ScopeName": "BOOTCAMP",
+    "PolicyDefinition": "Audit that Windows web servers are using secure communication protocols"
+  }
+]
