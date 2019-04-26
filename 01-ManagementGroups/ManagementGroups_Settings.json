@@ -1,0 +1,31 @@
+[
+    {
+        "ManagementGroupName": "2eeb1a54-52e8-419e-a20b-379a4c332df5",
+        "ManagementGroupDisplayName": "MGMTGROUP-HUB",
+        "ManagementGroupParent":{
+            "Id": "/providers/Microsoft.Management/managementGroups/6a6f640f-8bcb-4103-b982-a879eb2f1ea8"
+        },
+        "ChildSubscriptions": []
+    },
+    {
+        "ManagementGroupName": "8583f3c1-b69c-4c15-b874-84637710aad6",
+        "ManagementGroupDisplayName": "MGMTGROUP-INTERNAL",
+        "ManagementGroupParent":{
+            "Id": "/providers/Microsoft.Management/managementGroups/6a6f640f-8bcb-4103-b982-a879eb2f1ea8"
+        },
+        "ChildSubscriptions": [
+            {
+                "SubscriptionName":  "FABIENMSDN",
+                "SubscriptionId":  "15d130cf-8734-4fcc-9f75-54711fe102eb"
+            }
+        ]
+    },
+    {
+        "ManagementGroupName": "9960fc37-2d2f-4082-a11e-24b81484b7b8",
+        "ManagementGroupDisplayName": "MGMTGROUP-CLIENT",
+        "ManagementGroupParent":{
+            "Id": "/providers/Microsoft.Management/managementGroups/6a6f640f-8bcb-4103-b982-a879eb2f1ea8"
+        },
+        "ChildSubscriptions": []
+    }
+]
